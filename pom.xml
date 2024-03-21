@@ -35,27 +35,27 @@
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
-
             <plugin>
-                <groupId>com.jolira</groupId>
-                <artifactId>onejar-maven-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- 注意这里如果项目是1.8需要指定对应的版本号 否则默认会自动依赖最新版本 从而导致版本不一致而编译失败 -->
+                <version>2.3.12.RELEASE</version>
                 <executions>
                     <execution>
-                        <configuration>
-                            <mainClass>cn.tekin.MyApp</mainClass>
-                            <attachToBuild>true</attachToBuild>
-                            <classifier>Tekin</classifier>
-                            <!--注意 在JDK1.8中, 使用filename 这个属性会导致 Unexpected end of ZLIB input stream异常-->
-                        </configuration>
                         <goals>
-                            <goal>one-jar</goal>
+                            <goal>repackage</goal>
                         </goals>
+                        <configuration>
+                            <classifier>spring-boot</classifier>
+                            <mainClass>
+                                cn.tekin.MyApp
+                            </mainClass>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
 
         </plugins>
     </build>
-
 
 </project>

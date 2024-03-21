@@ -17,15 +17,5 @@ public class MyApp {
         String msg = orderService.payOrder();
         System.out.println(msg);
 
-        //ApplicationContext BeanFactory 接口
-        // 都提供getBean方法区别？
-        // BeanFactory 职责单一, 只负责创建@Bean
-        // ApplicationContext 更加智能
-
-//        DefaultListableBeanFactory defaultListableBeanFactory = new DefaultListableBeanFactory();
-//        defaultListableBeanFactory.registerBeanDefinition("userservice", new RootBeanDefinition(UserService.class));
-//        UserService userService = (UserService) defaultListableBeanFactory.getBean("userService");
-//
-
     }
 }

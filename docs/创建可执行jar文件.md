@@ -1,5 +1,9 @@
 
-java maven项目创建可执行jar的6种方法,可以用于任何JAVA项目包含spring, springboot项目
+# 全网最全的 java maven项目创建可执行jar的6种方法,可以用于任何JAVA项目包含spring, springboot项目
+
+    JAVA项目创建可运行的jar文件其实就是在jar文件中构建清单文件META-INF/MANIFEST.MF, 在这个前端文件中需要指定入口类 main-class, 还有打包相关的依赖项目等.
+第6种方法依赖的额外包最少,文件也最小, 第五种方法生成的jar文件最大, 但是他启动的是一个tomcat服务,通常用于web项目的部署.
+其他几种方法没有内置服务,适合于控制台应用的jar打包, Spring Boot Maven Plugin这个和springboot是无缝集成的,常用于springboot项目, 以下是对各种插件生成可执行jar的配置方法和各自的优缺点的总结和对比.
 
 
 ## 1. 使用maven-jar-plugin和maven-dependency-plugin插件
@@ -368,7 +372,6 @@ Main-Class: org.apache.tomcat.maven.runner.Tomcat7RunnerCli
         </plugins>
     </build>
 
-
 </project>
 ~~~
 
@@ -385,11 +388,12 @@ One-Jar-Main-Class: cn.tekin.MyApp
 创建可运行的jar文件其实就是在jar文件中构建清单文件META-INF/MANIFEST.MF, 在这个前端文件中需要指定入口类 main-class, 还有打包相关的依赖项目等.
 第6种方法依赖的额外包最少,文件也最小, 第五种方法生成的jar文件最大.
 
-
-
-
-
-
-
+同一项目不同的插件生成的jar可执行文件文件大小比较:
+1. maven-jar-plugin   4.2M + 5kb
+2. Apache Maven Assembly Plugin  4.1M
+3. Apache Maven Shade Plugin  4.2M
+4. Spring Boot Maven Plugin  4.3M
+5. Web Application With Executable Tomcat  9.2M
+6. One Jar Maven Plugin   3.8M
 
 
