@@ -1,5 +1,8 @@
-package cn.tekin;
+package cn.tekin.service;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserService {
 
     public void test() {
