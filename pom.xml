@@ -61,7 +61,7 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
                             <!-- 这里写入你的可执行Class的Reference 即包含main入口类的Reference -->
-                            <mainClass>cn.tekin.Main</mainClass>
+                            <mainClass>cn.tekin.MyApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
