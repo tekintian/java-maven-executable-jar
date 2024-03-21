@@ -44,6 +44,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
+                            <!-- 指定所有依赖的jar包的输出路径 -->
                             <outputDirectory>
                                 ${project.build.directory}/libs
                             </outputDirectory>
@@ -59,6 +60,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
+                            <!-- 这里写入你的可执行Class的Reference 即包含main入口类的Reference -->
                             <mainClass>cn.tekin.Main</mainClass>
                         </manifest>
                     </archive>
