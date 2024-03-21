@@ -298,41 +298,98 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 
 - 清单文件
 ~~~mf
-
+Manifest-Version: 1.0
+Main-Class: org.apache.tomcat.maven.runner.Tomcat7RunnerCli
 ~~~
 
 
 
 ## 6. One Jar Maven Plugin
-优点: 干净的委托模型，允许类处于OneJar的顶级，支持外部Jar，并且可以支持Native库
+优点: 干净的委托模型，允许类处于OneJar的顶级，支持外部Jar，并且可以支持Native库, 在jar文件中包含了one-jar的源码,可以自己扩展
 不足: 停止维护很多年了.
 ~~~xml
-<plugin>
-    <groupId>com.jolira</groupId>
-    <artifactId>onejar-maven-plugin</artifactId>
-    <executions>
-        <execution>
-            <configuration>
-                <mainClass>cn.tekin.MyApp</mainClass>
-                <attachToBuild>true</attachToBuild>
-                <filename>
-                  ${project.build.finalName}.${project.packaging}
-                </filename>
-            </configuration>
-            <goals>
-                <goal>one-jar</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.tekin</groupId>
+    <artifactId>spring_demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.version>5.3.29</spring.version>
+    </properties>
+
+    <dependencies>
+        <!-- https://mavenlibs.com/maven/dependency/org.springframework/spring-core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <!-- https://mavenlibs.com/maven/dependency/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.name}</finalName>
+        <plugins>
+
+            <plugin>
+                <groupId>com.jolira</groupId>
+                <artifactId>onejar-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <mainClass>cn.tekin.MyApp</mainClass>
+                            <attachToBuild>true</attachToBuild>
+                            <classifier>Tekin</classifier>
+                            <!--注意 在JDK1.8中, 使用filename 这个属性会导致 Unexpected end of ZLIB input stream异常-->
+                        </configuration>
+                        <goals>
+                            <goal>one-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+</project>
 ~~~
 
 - 清单文件
 ~~~mf
-
+Manifest-Version: 1.0
+ImplementationVersion: 1.0-SNAPSHOT
+Main-Class: com.simontuffs.onejar.Boot
+One-Jar-Main-Class: cn.tekin.MyApp
 ~~~
 
 
 ## 总结
 创建可运行的jar文件其实就是在jar文件中构建清单文件META-INF/MANIFEST.MF, 在这个前端文件中需要指定入口类 main-class, 还有打包相关的依赖项目等.
-第一种方法依赖的额外包最少, 第五种方法生成的jar文件最大.
+第6种方法依赖的额外包最少,文件也最小, 第五种方法生成的jar文件最大.
+
+
+
+
+
+
+
+
+

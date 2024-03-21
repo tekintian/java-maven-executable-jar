@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>5.3.29</spring.version>
     </properties>
+
     <dependencies>
         <!-- https://mavenlibs.com/maven/dependency/org.springframework/spring-core -->
         <dependency>
@@ -29,35 +30,26 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
+
             <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
+                <groupId>com.jolira</groupId>
+                <artifactId>onejar-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>tomcat-run</id>
-                        <goals>
-                            <goal>exec-war-only</goal>
-                        </goals>
-                        <phase>package</phase>
                         <configuration>
-                            <path>/</path>
-                            <enableNaming>false</enableNaming>
-                            <finalName>webapp.jar</finalName>
-                            <charset>utf-8</charset>
+                            <mainClass>cn.tekin.MyApp</mainClass>
+                            <attachToBuild>true</attachToBuild>
+                            <classifier>Tekin</classifier>
+                            <!--注意 在JDK1.8中, 使用filename 这个属性会导致 Unexpected end of ZLIB input stream异常-->
                         </configuration>
+                        <goals>
+                            <goal>one-jar</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
