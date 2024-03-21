@@ -3,8 +3,6 @@ package cn.tekin;
 import cn.tekin.config.ConfigClass;
 import cn.tekin.service.OrderService;
 import cn.tekin.service.UserService;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class MyApp {

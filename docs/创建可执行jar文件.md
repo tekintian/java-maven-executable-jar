@@ -1,8 +1,13 @@
 
-Spring项目创建可执行jar的5种方法
+java maven项目创建可执行jar的6种方法,可以用于任何JAVA项目包含spring, springboot项目
 
-1. 使用maven-jar-plugin和maven-dependency-plugin插件
-pom依赖如下
+
+## 1. 使用maven-jar-plugin和maven-dependency-plugin插件
+优点: 处理过程透明，我们可以自定义每个步骤
+不足: 手动; 依赖项不在最终的jar中，这意味着只有当libs文件夹对jar是可访问和可见的时，我们的可执行jar才会运行
+
+
+- pom依赖如下
 ~~~xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -105,6 +110,10 @@ java -jar target/spring_demo.jar
 
 
 ## 2. 使用Apache Maven Assembly Plugin插件
+优点: 依赖包含在jar文件中
+不足: 只能对制品进行基础控制, 如没有类重定位的支持
+
+
 这个配置默认会生成2个jar文件, 一个包含配置清单和依赖的jar包 xxx-jar-with-dependencies.jar, 另外一个是不包含依赖且没有清单的jar包.
 ~~~xml
 <plugin>
@@ -152,30 +161,27 @@ Main-Class: cn.tekin.MyApp
 java -jar target/spring_demo-jar-with-dependencies.jar
 
 
-## 3. Apache Maven Assembly Plugin
+## 3. Apache Maven Shade Plugin
+优点:  依赖包含在jar文件中, 可对我们的jar制品进行高级控制, 可对依赖的类进行重命名和重新定位.
+不足: 我们想使用高级功能时配置较为复杂, 生成的jar文件大小比上面2种稍大.
 
 ~~~xml
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-assembly-plugin</artifactId>
+    <artifactId>maven-shade-plugin</artifactId>
     <executions>
         <execution>
-            <phase>package</phase>
             <goals>
-                <goal>single</goal>
+                <goal>shade</goal>
             </goals>
             <configuration>
-                <archive>
-                <manifest>
-                    <mainClass>
-                        com.baeldung.executable.ExecutableMavenJar
-                    </mainClass>
-                </manifest>
-                </archive>
-                <descriptorRefs>
-                    <descriptorRef>jar-with-dependencies</descriptorRef>
-                </descriptorRefs>
-            </configuration>
+                <shadedArtifactAttached>true</shadedArtifactAttached>
+                <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <mainClass>cn.tekin.MyApp</mainClass>
+                </transformer>
+            </transformers>
+        </configuration>
         </execution>
     </executions>
 </plugin>
@@ -185,12 +191,138 @@ java -jar target/spring_demo-jar-with-dependencies.jar
 ~~~mf
 Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
-Created-By: Apache Maven
 Built-By: Tekin
+Created-By: Apache Maven 3.6.3
 Build-Jdk: 1.8.0_362
 Main-Class: cn.tekin.MyApp
 ~~~
 
+
+
+## 4. Spring Boot Maven Plugin
+优点: 依赖项包含在jar文件中，我们可以在每个可访问的位置运行它，可对打包制品进行高级控制，排除jar文件的依赖项等，还可以打包war文件
+
+不足: 添加可能不必要的Spring和Spring Boot相关类, 生成的jar文件大小比方法3稍大
+
+~~~xml
+ <build>
+        <finalName>${project.name}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- 注意这里如果项目是1.8需要指定对应的版本号 否则默认会自动依赖最新版本 从而导致版本不一致而编译失败 -->
+                <version>2.3.12.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>spring-boot</classifier>
+                            <mainClass>
+                                cn.tekin.MyApp
+                            </mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+~~~
+
+- 清单文件
+~~~mf
+Manifest-Version: 1.0
+Spring-Boot-Classpath-Index: BOOT-INF/classpath.idx
+Archiver-Version: Plexus Archiver
+Built-By: Tekin
+Start-Class: cn.tekin.MyApp
+Spring-Boot-Classes: BOOT-INF/classes/
+Spring-Boot-Lib: BOOT-INF/lib/
+Spring-Boot-Version: 2.3.12.RELEASE
+Created-By: Apache Maven 3.6.3
+Build-Jdk: 1.8.0_362
+Main-Class: org.springframework.boot.loader.JarLauncher
+~~~
+
+
+
+## 5. Web Application With Executable Tomcat
+优点: 依赖项包含在jar文件中，容易部署和运行
+
+不足: 因为在内置的war文件中打包了一个内置的tomcat发行包, 所有jar文件比较大.
+
+~~~xml
+ <dependencies>
+ 	<!-- 其他依赖..... -->
+
+ 	<!-- servlet-api依赖 -->
+	<dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>javax.servlet-api</artifactId>
+	    <scope>provided</scope>
+	</dependency>
+ </dependencies>
+
+<plugin>
+    <groupId>org.apache.tomcat.maven</groupId>
+    <artifactId>tomcat7-maven-plugin</artifactId>
+    <version>2.0</version>
+    <executions>
+        <execution>
+            <id>tomcat-run</id>
+            <goals>
+                <goal>exec-war-only</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+                <path>/</path>
+                <enableNaming>false</enableNaming>
+                <finalName>webapp.jar</finalName>
+                <charset>utf-8</charset>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+~~~
+
+- 清单文件
+~~~mf
+
+~~~
+
+
+
+## 6. One Jar Maven Plugin
+优点: 干净的委托模型，允许类处于OneJar的顶级，支持外部Jar，并且可以支持Native库
+不足: 社区支持部活跃
+~~~xml
+<plugin>
+    <groupId>com.jolira</groupId>
+    <artifactId>onejar-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <configuration>
+                <mainClass>cn.tekin.MyApp</mainClass>
+                <attachToBuild>true</attachToBuild>
+                <filename>
+                  ${project.build.finalName}.${project.packaging}
+                </filename>
+            </configuration>
+            <goals>
+                <goal>one-jar</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+~~~
+
+- 清单文件
+~~~mf
+
+~~~
 
 
 

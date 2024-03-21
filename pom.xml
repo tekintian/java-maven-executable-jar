@@ -33,32 +33,25 @@
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
-
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- 注意这里如果项目是1.8需要指定对应的版本号 否则默认会自动依赖最新版本 从而导致版本不一致而编译失败 -->
+                <version>2.3.12.RELEASE</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <archive>
-                                <manifest>
-                                    <mainClass>
-                                        cn.tekin.MyApp
-                                    </mainClass>
-                                </manifest>
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
+                            <classifier>spring-boot</classifier>
+                            <mainClass>
+                                cn.tekin.MyApp
+                            </mainClass>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
 
         </plugins>
     </build>
