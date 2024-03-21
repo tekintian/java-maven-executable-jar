@@ -152,11 +152,44 @@ Main-Class: cn.tekin.MyApp
 java -jar target/spring_demo-jar-with-dependencies.jar
 
 
+## 3. Apache Maven Assembly Plugin
 
+~~~xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-assembly-plugin</artifactId>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>single</goal>
+            </goals>
+            <configuration>
+                <archive>
+                <manifest>
+                    <mainClass>
+                        com.baeldung.executable.ExecutableMavenJar
+                    </mainClass>
+                </manifest>
+                </archive>
+                <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+~~~
 
-
-
-
+- 清单文件
+~~~mf
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: Tekin
+Build-Jdk: 1.8.0_362
+Main-Class: cn.tekin.MyApp
+~~~
 
 
 
