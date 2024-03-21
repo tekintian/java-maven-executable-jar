@@ -252,40 +252,48 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 ## 5. Web Application With Executable Tomcat
 优点: 依赖项包含在jar文件中，容易部署和运行
 
-不足: 因为在内置的war文件中打包了一个内置的tomcat发行包, 所有jar文件比较大.
+不足: 很多年未发行新版本, 且因为在内置的war文件中打包了一个内置的tomcat发行包, 所以jar文件比较大. 
 
 ~~~xml
- <dependencies>
+ 	<dependencies>
  	<!-- 其他依赖..... -->
 
  	<!-- servlet-api依赖 -->
-	<dependency>
-	    <groupId>javax.servlet</groupId>
-	    <artifactId>javax.servlet-api</artifactId>
-	    <scope>provided</scope>
-	</dependency>
- </dependencies>
+	  <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
 
-<plugin>
-    <groupId>org.apache.tomcat.maven</groupId>
-    <artifactId>tomcat7-maven-plugin</artifactId>
-    <version>2.0</version>
-    <executions>
-        <execution>
-            <id>tomcat-run</id>
-            <goals>
-                <goal>exec-war-only</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-                <path>/</path>
-                <enableNaming>false</enableNaming>
-                <finalName>webapp.jar</finalName>
-                <charset>utf-8</charset>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
+    </dependencies>
+
+	<build>
+        <finalName>${project.name}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <id>tomcat-run</id>
+                        <goals>
+                            <goal>exec-war-only</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <path>/</path>
+                            <enableNaming>false</enableNaming>
+                            <finalName>webapp.jar</finalName>
+                            <charset>utf-8</charset>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
 ~~~
 
 - 清单文件
@@ -297,7 +305,7 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 
 ## 6. One Jar Maven Plugin
 优点: 干净的委托模型，允许类处于OneJar的顶级，支持外部Jar，并且可以支持Native库
-不足: 社区支持部活跃
+不足: 停止维护很多年了.
 ~~~xml
 <plugin>
     <groupId>com.jolira</groupId>
@@ -325,7 +333,6 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 ~~~
 
 
-
-
-
-
+## 总结
+创建可运行的jar文件其实就是在jar文件中构建清单文件META-INF/MANIFEST.MF, 在这个前端文件中需要指定入口类 main-class, 还有打包相关的依赖项目等.
+第一种方法依赖的额外包最少, 第五种方法生成的jar文件最大.

@@ -28,26 +28,35 @@
             <version>${spring.version}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <!-- 注意这里如果项目是1.8需要指定对应的版本号 否则默认会自动依赖最新版本 从而导致版本不一致而编译失败 -->
-                <version>2.3.12.RELEASE</version>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
                 <executions>
                     <execution>
+                        <id>tomcat-run</id>
                         <goals>
-                            <goal>repackage</goal>
+                            <goal>exec-war-only</goal>
                         </goals>
+                        <phase>package</phase>
                         <configuration>
-                            <classifier>spring-boot</classifier>
-                            <mainClass>
-                                cn.tekin.MyApp
-                            </mainClass>
+                            <path>/</path>
+                            <enableNaming>false</enableNaming>
+                            <finalName>webapp.jar</finalName>
+                            <charset>utf-8</charset>
                         </configuration>
                     </execution>
                 </executions>
