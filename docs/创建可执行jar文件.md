@@ -105,7 +105,7 @@ java -jar target/spring_demo.jar
 
 
 ## 2. 使用Apache Maven Assembly Plugin插件
-
+这个配置默认会生成2个jar文件, 一个包含配置清单和依赖的jar包 xxx-jar-with-dependencies.jar, 另外一个是不包含依赖且没有清单的jar包.
 ~~~xml
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -132,7 +132,26 @@ java -jar target/spring_demo.jar
     </executions>
 </plugin>
 ~~~
-注意这里省略的其他配置,其他配置见1
+注意这里省略的其他配置,其他配置见1;
+
+- 生成jar文件
+mvn package
+
+- 清单文件
+~~~mf
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: Tekin
+Build-Jdk: 1.8.0_362
+Main-Class: cn.tekin.MyApp
+~~~
+
+- 运行:
+这里生成的可执行jar是包含依赖包的jar文件.
+java -jar target/spring_demo-jar-with-dependencies.jar
+
+
 
 
 
